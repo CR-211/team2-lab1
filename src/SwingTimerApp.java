@@ -4,9 +4,48 @@ import java.awt.event.ActionListener;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
+class Victor{
+    private Timer timer;
+    JLabel statusLabel=new JLabel("Timer not started");
+
+     void startTimer(JPanel panel) {
+        if (timer == null) {
+            timer = new Timer();
+
+            panel.add(statusLabel);
+            TimerTask timerTask = new TimerTask() {
+                int i=0;
+
+                @Override
+                public void run() {
+
+                    // Acțiunile care trebuie executate la fiecare interval de timp
+                    /*System.out.println(i++);*/
+                    statusLabel.setText(String.valueOf(i++));
+                }
+            };
+            // Pornirea timer-ului cu un interval de 1000 milisecunde (1 secundă)
+            timer.scheduleAtFixedRate(timerTask, 0, 1000);
+        }
+    }
+
+     void stopTimer() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+            System.out.println("Timer stopped.");
+        }
+    }
+}
+
 public class SwingTimerApp extends JFrame {
 
+    public Victor victor= new Victor();
+
+
     private Timer timer;
+    JPanel panel = new JPanel();
 
     public SwingTimerApp() {
         setTitle("Swing Timer App");
@@ -16,21 +55,22 @@ public class SwingTimerApp extends JFrame {
         JButton startButton = new JButton("Start Timer");
         JButton stopButton = new JButton("Stop Timer");
 
+
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                startTimer();
+                victor.startTimer(panel);
             }
         });
 
         stopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                stopTimer();
+                victor.stopTimer();
             }
         });
 
-        JPanel panel = new JPanel();
+
         panel.add(startButton);
         panel.add(stopButton);
 
@@ -40,29 +80,7 @@ public class SwingTimerApp extends JFrame {
         setVisible(true);
     }
 
-    private void startTimer() {
-        if (timer == null) {
-            timer = new Timer();
-            TimerTask timerTask = new TimerTask() {
-                @Override
-                public void run() {
-                    // Acțiunile care trebuie executate la fiecare interval de timp
-                    System.out.println("Timer tick!");
-                }
-            };
 
-            // Pornirea timer-ului cu un interval de 1000 milisecunde (1 secundă)
-            timer.scheduleAtFixedRate(timerTask, 0, 1000);
-        }
-    }
-
-    private void stopTimer() {
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-            System.out.println("Timer stopped.");
-        }
-    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
